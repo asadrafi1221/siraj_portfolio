@@ -29,7 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
       <nav
         className={`pointer-events-auto transition-all duration-500 rounded-full border ${
           scrolled
-            ? "glass-panel border-white/10 shadow-2xl shadow-black/50 py-3 px-5"
+            ? " backdrop-blur-xl border-white/10 shadow-2xl shadow-black/50 py-3 px-5"
             : "bg-transparent border-transparent py-4 px-6"
         }`}
       >
@@ -49,8 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
                   : "w-auto opacity-100"
               }`}
             >
-              Siraj
-              <span className="text-muted-foreground font-normal">.ai</span>
+              analyze4growth
             </span>
           </div>
 
