@@ -10,7 +10,7 @@ interface UpworkProps {
 
 const Upwork: React.FC<UpworkProps> = () => {
   const [activeTab, setActiveTab] = useState<"completed" | "progress">(
-    "completed"
+    "completed",
   );
   const [showFullBio, setShowFullBio] = useState(false);
 
