@@ -330,7 +330,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               </h3>
               <p className="text-neutral-500 leading-relaxed">
                 End-to-end encryption ensures your proprietary data remains
-                yours. Compliant with GDPR and HIPAA standards
+                yours. Compliant with GDPR and HIPAA standards.
               </p>
             </div>
             {/* TEXT 3: CTA
