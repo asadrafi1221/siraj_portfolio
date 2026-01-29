@@ -1,0 +1,5 @@
+{
+  "name": "Simple Start Text",
+  "description": "A clean, minimalist, and high-performance AI text interface powered by Google Gemini. Features real-time streaming, Markdown support, and model selection.",
+  "requestFramePermissions": []
+}
