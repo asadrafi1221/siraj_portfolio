@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   Menu, 
@@ -10,7 +10,6 @@ import {
   Home, 
   Layers, 
   Info, 
-  MessageSquare,
   Sparkles 
 } from 'lucide-react';
 
@@ -19,7 +18,6 @@ import {
 const primaryBtnClasses = "inline-flex items-center justify-center gap-2 rounded-xl font-bold text-sm transition-all duration-300 ease-out active:scale-[0.96] outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 shadow-xl shadow-zinc-200/50 hover:bg-zinc-800 hover:shadow-2xl hover:shadow-zinc-900/20 hover:-translate-y-0.5 bg-zinc-900 text-white";
 
 // Secondary button for secondary actions
-const secondaryBtnClasses = "inline-flex items-center justify-center gap-2 rounded-xl font-bold text-sm transition-all duration-200 ease-out active:scale-[0.96] bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50 hover:text-zinc-900 hover:border-zinc-300 shadow-sm";
 
 function Navbar() {
   const pathname = usePathname();
