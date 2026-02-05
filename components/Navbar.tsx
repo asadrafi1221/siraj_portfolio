@@ -1,131 +1,170 @@
-import React, { useState, useEffect } from "react";
-import { Menu, X, Command } from "lucide-react";
-import { PageRoute } from "@/types";
+/* eslint-disable react-hooks/set-state-in-effect */
+'use client'
 
-interface NavbarProps {
-  currentPage: PageRoute;
-  onNavigate: (page: PageRoute) => void;
-}
+import React, { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { 
+  Menu, 
+  X, 
+  ArrowRight, 
+  Home, 
+  Layers, 
+  Info, 
+  MessageSquare,
+  Sparkles 
+} from 'lucide-react';
 
-export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
-  const [isOpen, setIsOpen] = useState(false);
+// --- Styles ---
+// Lyra-style primary button with deep shadow and press effect
+const primaryBtnClasses = "inline-flex items-center justify-center gap-2 rounded-xl font-bold text-sm transition-all duration-300 ease-out active:scale-[0.96] outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 shadow-xl shadow-zinc-200/50 hover:bg-zinc-800 hover:shadow-2xl hover:shadow-zinc-900/20 hover:-translate-y-0.5 bg-zinc-900 text-white";
+
+// Secondary button for secondary actions
+const secondaryBtnClasses = "inline-flex items-center justify-center gap-2 rounded-xl font-bold text-sm transition-all duration-200 ease-out active:scale-[0.96] bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50 hover:text-zinc-900 hover:border-zinc-300 shadow-sm";
+
+function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // Handle scroll detection
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: "Capabilities", value: PageRoute.SERVICES },
-    { name: "Case Studies", value: PageRoute.PORTFOLIO },
-    { name: "Studio", value: PageRoute.ABOUT },
-    { name: "Upwork", value: PageRoute.UPWORK },
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname]);
+
+  const handleNavigate = (path: string) => {
+    router.push(path);
+  };
+
+  const navItems = [
+    { path: "/", name: "Home", icon: <Home size={18} /> },
+    { path: "/services", name: "Services", icon: <Layers size={18} /> },
+    { path: "/about", name: "About", icon: <Info size={18} /> },
   ];
 
+  const isActive = (path: string) => 
+    path === "/" ? pathname === "/" : pathname.startsWith(path);
+
   return (
-    <div className="fixed top-6 left-0 right-0 z-[100] flex justify-center px-4 pointer-events-none font-['Inter',_sans-serif]">
-      <nav
-        className={`pointer-events-auto transition-all duration-500 rounded-full border ${
-          scrolled
-            ? "bg-white/80 backdrop-blur-xl border-neutral-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] py-3 px-5"
-            : "bg-transparent border-transparent py-4 px-6"
+    <>
+      <nav 
+        className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+          scrolled || isMobileOpen
+            ? "bg-white/90 backdrop-blur-xl border-b border-zinc-200/80 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.03)]" 
+            : "bg-transparent py-5 border-b border-transparent"
         }`}
       >
-        <div className="flex items-center gap-8 md:gap-12">
-          {/* Logo */}
-          <div
-            className="flex items-center cursor-pointer gap-3 group"
-            onClick={() => onNavigate(PageRoute.HOME)}
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          
+          {/* --- Brand Logo --- */}
+          <button
+            onClick={() => handleNavigate("/")}
+            className="flex items-center gap-3 group outline-none"
           >
-            <div className="w-8 h-8 rounded-full bg-[#171717] text-white flex items-center justify-center transition-transform group-hover:rotate-180 duration-700 shadow-md">
-              <Command className="w-4 h-4" />
+            <div className="flex gap-1 group-hover:gap-1.5 transition-all duration-500 ease-out items-end">
+              <div className="w-1.5 h-6 bg-zinc-900 rounded-full group-hover:bg-indigo-600 transition-colors"></div>
+              <div className="w-1.5 h-4 bg-zinc-400 rounded-full group-hover:bg-indigo-400 transition-colors"></div>
+              <div className="w-1.5 h-7 bg-zinc-900 rounded-full group-hover:bg-emerald-500 transition-colors"></div>
             </div>
-            <span
-              className={`text-sm font-bold tracking-tight text-[#171717] transition-all duration-500 ${
-                scrolled
-                  ? "w-0 opacity-0 overflow-hidden"
-                  : "w-auto opacity-100"
-              }`}
-            >
-              Analyze4Growth
+            <span className="font-display font-bold text-xl tracking-tight text-zinc-900">
+              Stats<span className="text-zinc-400 font-medium">Analysis</span>
             </span>
-          </div>
+          </button>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
+          {/* --- Desktop Nav (Floating Capsule) --- */}
+          <div className="hidden md:flex items-center p-1 bg-zinc-100/60 rounded-full border border-zinc-200/60 backdrop-blur-md">
+            {navItems.map((item) => (
               <button
-                key={link.name}
-                onClick={() => onNavigate(link.value)}
-                className={`relative px-4 py-1.5 text-xs font-medium tracking-wide rounded-full transition-all duration-300 ${
-                  currentPage === link.value
-                    ? "text-[#171717] bg-neutral-100 font-semibold"
-                    : "text-neutral-500 hover:text-[#171717] hover:bg-black/[0.03]"
+                key={item.path}
+                onClick={() => handleNavigate(item.path)}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-out relative ${
+                  isActive(item.path)
+                    ? "text-zinc-900 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-black/5 scale-[1.02]" 
+                    : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50"
                 }`}
               >
-                {link.name}
+                {item.name}
               </button>
             ))}
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-4 pl-6 border-l border-neutral-200">
+          {/* --- Desktop Actions --- */}
+          <div className="hidden md:flex items-center gap-3">
+          
             <button
-              onClick={() => onNavigate(PageRoute.CONTACT)}
-              className="hidden md:flex items-center gap-2 bg-[#171717] text-white px-6 py-2 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-neutral-900/20"
+              onClick={() => handleNavigate("/chat")}
+              className={`${primaryBtnClasses} px-6 py-2.5`}
             >
-              Hire Me
-            </button>
-
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-1 text-[#171717]"
-            >
-              {isOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
+              Start Project <ArrowRight size={16} />
             </button>
           </div>
+
+          {/* --- Mobile Menu Toggle --- */}
+          <button 
+            onClick={() => setIsMobileOpen(!isMobileOpen)}
+            className="md:hidden p-2.5 rounded-xl text-zinc-600 hover:bg-zinc-100 transition-all active:scale-95 border border-zinc-200 bg-white shadow-sm"
+          >
+            {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="pointer-events-auto absolute top-24 left-4 right-4 bg-white/90 backdrop-blur-2xl rounded-[2rem] p-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] z-50 md:hidden animate-slide-up border border-white/50 ring-1 ring-black/5">
-          <div className="flex flex-col gap-2">
-            {navLinks.map((link) => (
+      {/* --- Mobile Menu Overlay (Premium Card Style) --- */}
+      <div 
+        className={`fixed inset-x-0 top-[70px] z-50 p-4 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden ${
+          isMobileOpen 
+            ? "opacity-100 translate-y-0 visible" 
+            : "opacity-0 -translate-y-4 invisible pointer-events-none"
+        }`}
+      >
+        <div className="bg-white rounded-[2rem] border border-zinc-200 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] p-5 overflow-hidden">
+          
+          {/* Navigation Links Grid */}
+          <div className="grid gap-2 mb-6">
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest px-4 mb-2">Menu</span>
+            {navItems.map((item) => (
               <button
-                key={link.name}
-                onClick={() => {
-                  onNavigate(link.value);
-                  setIsOpen(false);
-                }}
-                className={`p-4 text-left rounded-xl transition-colors font-medium text-lg ${
-                  currentPage === link.value
-                    ? "bg-neutral-100 text-[#171717]"
-                    : "text-neutral-500 hover:bg-neutral-50 hover:text-[#171717]"
+                key={item.path}
+                onClick={() => handleNavigate(item.path)}
+                className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-base font-semibold transition-all duration-200 group ${
+                  isActive(item.path)
+                    ? "bg-zinc-900 text-white shadow-md"
+                    : "bg-zinc-50 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 border border-zinc-100"
                 }`}
               >
-                {link.name}
+                <span className={`p-2 rounded-lg ${isActive(item.path) ? "bg-white/20" : "bg-white border border-zinc-200 group-hover:border-zinc-300"}`}>
+                   {item.icon}
+                </span>
+                {item.name}
+                {isActive(item.path) && <Sparkles size={16} className="ml-auto text-emerald-400 animate-pulse" />}
               </button>
             ))}
-            <div className="h-px bg-neutral-100 my-4"></div>
-            <button
-              onClick={() => {
-                onNavigate(PageRoute.CONTACT);
-                setIsOpen(false);
-              }}
-              className="w-full bg-[#171717] text-white font-bold py-4 rounded-xl tracking-widest text-sm shadow-xl shadow-neutral-900/10"
-            >
-              START PROJECT
-            </button>
           </div>
+
+          {/* Call to Action Box */}
+          
+
         </div>
-      )}
-    </div>
+      </div>
+
+      {/* Backdrop for Mobile Menu */}
+      <div 
+        className={`fixed inset-0 bg-zinc-900/20 backdrop-blur-[2px] z-40 md:hidden transition-opacity duration-500 ${
+          isMobileOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+        }`}
+        onClick={() => setIsMobileOpen(false)}
+      />
+    </>
   );
-};
+}
+
+export default Navbar;

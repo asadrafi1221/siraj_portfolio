@@ -1,25 +1,21 @@
-import "./globals.css";
-import { Inter, Newsreader, JetBrains_Mono } from "next/font/google";
-import { Footer } from "@/components/Footer";
-import ClientLayout from "@/components/ClientLayout";
+'use client';
 
+import Navbar from "@/components/Navbar";
+import "./globals.css";
+import { Footer } from "@/components/Footer";
+import { Inter, Space_Grotesk } from "next/font/google";
+
+// Next Fonts
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600"],
-  variable: "--font-inter",
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "800"],
-  style: ["normal", "italic"],
-  variable: "--font-newsreader",
+  variable: "--font-sans",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-jetbrains",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
 });
 
 export default function RootLayout({
@@ -30,13 +26,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${newsreader.variable} ${jetbrainsMono.variable}`}
-      style={{ backgroundColor: "#020410", color: "#ffffff" }}
+      className={`${inter.variable} ${spaceGrotesk.variable}`}
+      suppressHydrationWarning
     >
-      <body className="antialiased">
-        <div className="noise-overlay" />
-        {/* We wrap everything in the navigation state provider */}
-        <ClientLayout>{children}</ClientLayout>
+      <body className="antialiased font-sans">
+        <Navbar />
+        {children}
+        <Footer />
       </body>
     </html>
   );
